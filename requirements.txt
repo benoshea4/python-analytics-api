@@ -5,3 +5,5 @@ sqlmodel
 pydantic
 sqlalchemy
 python-decouple
+psycopg [binary] # psycop v3
+psycopg2-binary
