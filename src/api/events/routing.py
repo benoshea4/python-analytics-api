@@ -1,6 +1,6 @@
 import os
 from fastapi import APIRouter, Depends
-from sqlmodel import Session
+from sqlmodel import Session, select
 
 from api.db.session import get_session
 
@@ -17,13 +17,15 @@ from ..db.config import DB_URL
 # Get DATA Here
 # LIST VIEW
 # GET /api/events/
-@router.get("/")
-def read_events() -> EventListSchema:
+@router.get("/", response_model=EventListSchema)
+def read_events(session: Session = Depends(get_session)):
     # A bunch of items in a table
+    query = select(EventModel).order_by(EventModel.id.desc()).limit(10) #
+    results = session.exec(query).all()
     print(os.environ.get("DB_URL"), DB_URL)   
     return {
-        "results": [{"id": 1}, {"id": 2}, {"id": 3}],
-        "count": 3
+        "results": results,
+        "count": len(results)
         }
 
 # SEND DATA HERE
